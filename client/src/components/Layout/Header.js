@@ -1,9 +1,18 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom' 
 import { CiShoppingTag } from "react-icons/ci";
-
+import { useAuth } from '../context/Auth';
 
 const Header = () => {
+    const {auth, setAuth} = useAuth()
+    const handleLogout = () => {
+        setAuth({
+            ...auth,
+            user: null,
+            token: null
+        })
+        localStorage.removeItem('auth')
+    }
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary ">
@@ -21,12 +30,23 @@ const Header = () => {
               <li className="nav-item">
                 <NavLink className="nav-link" exact to="/category">Category</NavLink>
               </li>
-              <li className="nav-item">
+              {
+                !auth.user ? (<>
+                    <li className="nav-item">
                 <NavLink className="nav-link" to="/register">Register</NavLink>
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="/login">Login</NavLink>
               </li>
+              
+                </>) : (
+                    <>
+                    <li className="nav-item">
+                <NavLink className="nav-link" onClick={handleLogout} to="/login">Logout</NavLink>
+              </li>
+                    </>
+                ) 
+              }
               <li className="nav-item">
                 <NavLink className="nav-link" to="/cart">Cart(0)   </NavLink>
               </li>
