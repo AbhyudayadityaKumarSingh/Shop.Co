@@ -2,6 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom' 
 import { CiShoppingTag } from "react-icons/ci";
 import { useAuth } from '../context/Auth';
+import toast from 'react-hot-toast';
 
 const Header = () => {
     const {auth, setAuth} = useAuth()
@@ -12,6 +13,7 @@ const Header = () => {
             token: null
         })
         localStorage.removeItem('auth')
+        toast.success('Logout successfully')
     }
   return (
     <>

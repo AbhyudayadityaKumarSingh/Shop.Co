@@ -14,5 +14,10 @@ router.post('/login', loginController);
 //test route , using middleware requireSignin
 router.get('/test', requireSignin ,isAdmin , testController);
 
+//protected route
+router.get('/user-auth', requireSignin , (req, res) => {
+    res.status(200).send( {ok  : true});
+});
+
 
 export default router;
