@@ -2,14 +2,15 @@ import React, {useState}from 'react'
 import Layout from '../../components/Layout/Layout'
 import { BiHandicap } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
-import {toast} from 'react-toastify'
+import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios'
+import { useAuth } from '../../components/context/Auth';
 
 const Login = () => {
    
     const [email, setEmail] = useState('') ;
     const [password, setPassword] = useState('') ;
-
+    const {auth, setAuth} = useAuth()
     const navigate = useNavigate();
 
 
@@ -24,6 +25,15 @@ const Login = () => {
         })
         if(res.data.success){
             toast.success(res.data.message) 
+            setAuth({
+                ...auth,
+                user : res.data.user,
+                token : res.data.token
+            })
+            localStorage.setItem('auth', JSON.stringify({
+                user : res.data.user,
+                token : res.data.token
+            })) //store the token in local storage then navigate to home page
             navigate('/')
         }
         else{

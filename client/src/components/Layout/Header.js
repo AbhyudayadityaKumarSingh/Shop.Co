@@ -2,6 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom' 
 import { CiShoppingTag } from "react-icons/ci";
 
+
 const Header = () => {
   return (
     <>
