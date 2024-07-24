@@ -20,7 +20,7 @@ const Header = () => {
       <nav className="navbar navbar-expand-lg bg-body-tertiary ">
         <div className="container-fluid">
           <NavLink className="navbar-brand" to="/">
-          <CiShoppingTag />  E-Commerce </NavLink>
+          <CiShoppingTag /> SHOP.CO </NavLink>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -43,9 +43,25 @@ const Header = () => {
               
                 </>) : (
                     <>
-                    <li className="nav-item">
-                <NavLink className="nav-link" onClick={handleLogout} to="/login">Logout</NavLink>
+                   
+
+             <li className="nav-item dropdown">
+  <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    {auth.user.name}
+  </a>
+  <ul className="dropdown-menu">
+    <li><NavLink 
+    to= {`/dashboard/${auth?.user?.role === 1 ? 'admin' : 'user'}`} 
+    
+    className="dropdown-item" >Dashboard</NavLink></li>
+            <li >
+                <NavLink className="dropdown-item" onClick={handleLogout} to="/login">Logout</NavLink>
               </li>
+   
+  </ul>
+</li>
+
+
                     </>
                 ) 
               }

@@ -1,7 +1,7 @@
 import React, {useState}from 'react'
 import Layout from '../../components/Layout/Layout'
 import { BiHandicap } from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios'
 import { useAuth } from '../../components/context/Auth';
@@ -12,6 +12,7 @@ const Login = () => {
     const [password, setPassword] = useState('') ;
     const {auth, setAuth} = useAuth()
     const navigate = useNavigate();
+    const location = useLocation();
 
 
     const handleSubmit = async (e) => {
@@ -34,7 +35,7 @@ const Login = () => {
                 user : res.data.user,
                 token : res.data.token
             })) //store the token in local storage then navigate to home page
-            navigate('/')
+            navigate(location.state || '/')
         }
         else{
             toast.error(res.data.message)
@@ -64,8 +65,11 @@ const Login = () => {
   </div>
    
   
- 
-  <button type="submit" className="btn btn-primary">Submit</button>
+ <div className='mb-3'>
+ <button type="submit" className="btn btn-primary " onClick={() => {navigate('/forgot-password')}} >Forgot Password</button>
+ </div>
+  <button type="submit" className="btn btn-primary">Submit</button> 
+  
 </form>
         </div>
     </Layout>

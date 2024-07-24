@@ -1,17 +1,20 @@
 import React, {useState ,useEffect} from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate ,useLocation } from 'react-router-dom'
 import { Image } from 'react-bootstrap'
-const Spinner = () => {
+const Spinner = ({path = "login"}) => {
     const [count,setCount] = useState(5)
     const navigate = useNavigate()
+    const location = useLocation()
 
     useEffect(() => {
         const interval = setInterval(() => {
             setCount((currentCount) => --currentCount)
         }, 1000)
-        count === 0 && navigate('/')
+        count === 0 && navigate(`${path}` ,{
+            state : location.pathname
+        })
         return () => clearInterval(interval)
-    }, [count,navigate])
+    }, [count,navigate,location,path])
   return (
     <>
    <div class="text-center justify-content-center align-items-center">
