@@ -9,7 +9,7 @@ const AdminMenu = () => {
             
 <div className="list-group">
 <h3>Admin Panel</h3>
-<NavLink to="/dashboard/admin/create-category" className="list-group-item list-group-item-action active" aria-current="true">
+<NavLink to="/dashboard/admin/create-category" className="list-group-item list-group-item-action" aria-current="true">
     Create Category
   </NavLink>
   <NavLink to="/dashboard/admin/create-product" className="list-group-item list-group-item-action">Create Product</NavLink>

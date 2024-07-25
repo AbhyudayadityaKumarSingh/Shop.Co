@@ -14,7 +14,7 @@ export const AdminDashboard = () => {
           </div>
             <div className="col-md-9">
             <div className='card'>
-                <h1>Admin Name :{auth?.user?.name}</h1>
+                <h1>Admin Name : {auth?.user?.name}</h1>
                 <h4>Email : {auth?.user?.email}</h4>
                 <h4>Contact : {auth?.user?.phone}</h4>
 

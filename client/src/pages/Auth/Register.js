@@ -4,6 +4,7 @@ import { BiHandicap } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
 import {toast} from 'react-toastify'
 import axios from 'axios'
+import { FaUserPlus } from "react-icons/fa";
 
 const Register = () => {
     const [name, setName] = useState('') ;
@@ -43,6 +44,9 @@ const Register = () => {
 
   return (
     <Layout>
+     <div className='d-flex justify-content-center align-items-center' style={{ marginBottom: '25px' }}>
+        <FaUserPlus style={{ fontSize: '4rem' }} />
+      </div>
         <div className='register'>
             <h1>Register User </h1>
 

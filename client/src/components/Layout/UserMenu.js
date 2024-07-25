@@ -10,7 +10,7 @@ const UserMenu = () => {
             
 <div className="list-group">
 <h3>User Menu</h3>
-  <NavLink to="/dashboard/user/profile" className="list-group-item list-group-item-action active" aria-current="true">
+  <NavLink to="/dashboard/user/profile" className="list-group-item list-group-item-action" aria-current="true">
   Profile
   </NavLink>
   <NavLink to="/dashboard/user/orders" className="list-group-item list-group-item-action">My Orders</NavLink>

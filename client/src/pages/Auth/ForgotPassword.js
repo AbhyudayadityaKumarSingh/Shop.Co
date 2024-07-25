@@ -3,6 +3,7 @@ import Layout from '../../components/Layout/Layout';
 import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { MdOutlineLockReset } from "react-icons/md";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -34,8 +35,11 @@ const ForgotPassword = () => {
 
     return (
         <Layout title={'Forgot Password - Shop.io'}>
+         <div className='d-flex justify-content-center align-items-center' style={{ marginBottom: '-100px' }}>
+        <MdOutlineLockReset style={{ fontSize: '4rem' }} />
+      </div>
             <div className='register'>
-                <h1>Forgot Password</h1>
+                <h1>Reset Your Password</h1>
 
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">

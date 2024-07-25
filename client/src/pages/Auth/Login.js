@@ -43,7 +43,7 @@ const Login = () => {
 
   return (
     <Layout>
-      <div className='d-flex justify-content-center align-items-center' style={{ marginBottom: '-100px' }}>
+      <div className='d-flex justify-content-center align-items-center' style={{ marginBottom: '-120px' }}>
         <FaUserGroup style={{ fontSize: '4rem' }} />
       </div>
       <div className='register'>
