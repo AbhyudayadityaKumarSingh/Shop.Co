@@ -17,7 +17,8 @@ const Footer = () => {
         <Link to="/about" >Developers</Link> |
         <Link to="/contact" >Contact Us</Link> | 
         
-        <Link to="/policy" >Privacy Policy</Link>
+        <Link to="/policy" >Privacy Policy</Link> |
+        <Link to="" >Become Sponsors</Link>
 
         </p>
     </div>

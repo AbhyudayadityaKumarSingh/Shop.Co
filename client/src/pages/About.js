@@ -1,5 +1,6 @@
 import React from "react";
-import { FaLinkedinIn } from "react-icons/fa";
+import { FaLinkedinIn , FaTwitter} from "react-icons/fa";
+
 import Layout from "./../components/Layout/Layout";
 
 const About = () => {
@@ -17,7 +18,7 @@ const About = () => {
         <div className="col-md-4">
         <h1 className=" text-center py-5">ABOUT ME</h1>
           <p className="text-center mt-2">
-            Hi , I am Abhyudayaditya Kumar Singh, a full stack developer. I have
+            Hi , I am <strong>Abhyudayaditya Kumar Singh </strong>, a full stack developer. I have
             experience in developing web applications using MERN stack. I have
             worked on various projects and have experience in developing
             responsive web applications. I have also worked on various
@@ -29,6 +30,9 @@ const About = () => {
                 </h4> 
                 <a href="https://www.linkedin.com/in/abhyudayaditya-kumar-singh-4a0b3b1b7/" className="text-center">
                     <FaLinkedinIn size={25} />
+                </a>
+                <a href="https://twitter.com/Abhyudayaditya" className="text-center">
+                    <FaTwitter size={25}  />
                 </a>
 
 
