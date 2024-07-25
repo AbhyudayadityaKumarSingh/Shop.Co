@@ -9,12 +9,11 @@ const UserMenu = () => {
 
             
 <div className="list-group">
-<h3>Admin Panel</h3>
-  <NavLink to="/dashboard/admin/create-category" className="list-group-item list-group-item-action active" aria-current="true">
-    Create Category
+<h3>User Menu</h3>
+  <NavLink to="/dashboard/user/profile" className="list-group-item list-group-item-action active" aria-current="true">
+  Profile
   </NavLink>
-  <NavLink to="/dashboard/admin/create-product" className="list-group-item list-group-item-action">Create Product</NavLink>
-  <NavLink to="/dashboard/admin/users" className="list-group-item list-group-item-action">Users</NavLink>
+  <NavLink to="/dashboard/user/orders" className="list-group-item list-group-item-action">My Orders</NavLink>
   
  
 </div>
