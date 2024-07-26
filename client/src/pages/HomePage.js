@@ -103,6 +103,7 @@ const HomePage = () => {
             console.log('Updated cart:', updatedCart);
             return updatedCart;
         });
+        localStorage.setItem('cart', JSON.stringify([...cart, product]));
         toast.success('Item added to cart');
     };
 
