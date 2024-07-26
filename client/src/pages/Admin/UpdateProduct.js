@@ -3,9 +3,12 @@ import Layout from '../../components/Layout/Layout';
 import AdminMenu from '../../components/Layout/AdminMenu';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Select, MenuItem, TextField, Button, InputLabel, FormControl } from '@mui/material';
+import { Select, MenuItem, TextField, Button, InputLabel, FormControl, Box } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const CreateProduct = () => {
+const UpdateProduct = () => {
+  const navigate = useNavigate();
+  const params = useParams();
   const [categories, setCategories] = useState([]);
   const [photo, setPhoto] = useState("");
   const [name, setName] = useState("");
@@ -14,6 +17,7 @@ const CreateProduct = () => {
   const [quantity, setQuantity] = useState("");
   const [shipping, setShipping] = useState("");
   const [category, setCategory] = useState("");
+  const [id, setId] = useState("");
 
   // Fetch all categories
   const getAllCategories = async () => {
@@ -33,28 +37,47 @@ const CreateProduct = () => {
     getAllCategories();
   }, []);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Get single product
+  const getSingleProduct = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost:8080/api/v1/product/get-product/${params.slug}`);
+      if (data.success) {
+        setName(data.product.name);
+        setId(data.product._id);
+        setDescription(data.product.description);
+        setPrice(data.product.price);
+        setQuantity(data.product.quantity);
+        setCategory(data.product.category);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Error in getting single product');
+    }
+  };
 
+  useEffect(() => {
+    getSingleProduct();
+    // eslint-disable-next-line
+  }, []);
+
+  // Handle form submission
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('description', description);
     formData.append('price', price);
     formData.append('quantity', quantity);
-   
     formData.append('category', category);
     formData.append('photo', photo);
 
-    try {
-      const { data } = await axios.post('http://localhost:8080/api/v1/product/create-product', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+  
+      const { data } = await axios.put(`/api/v1/product/update-product/${id}`, formData, 
+);
 
       if (data.success) {
-        toast.success('Product created successfully');
+        toast.success('Product updated successfully');
         setName('');
         setDescription('');
         setPrice('');
@@ -63,24 +86,24 @@ const CreateProduct = () => {
         setPhoto('');
         // Clear form or redirect as needed
       } else {
-        toast.error('Failed to create product');
+        toast.error('Failed to update product');
       }
     } catch (error) {
       console.log(error);
-      toast.error('Failed to create product');
+      toast.error('Failed to update product');
     }
   };
 
   return (
-    <Layout title={'Dashboard - Create Product'}>
+    <Layout title={'Dashboard - Update Product'}>
       <div className='container-fluid m-3 p-3'>
         <div className='row'>
           <div className='col-md-3'>
             <AdminMenu />
           </div>
           <div className='col-md-9'>
-            <h1>Add Products</h1>
-            <form onSubmit={handleSubmit} className='m-1 w-75'>
+            <h1>Update Product</h1>
+            <form onSubmit={handleUpdate} className='m-1 w-75'>
               <FormControl fullWidth margin="normal">
                 <InputLabel>Category</InputLabel>
                 <Select
@@ -97,18 +120,19 @@ const CreateProduct = () => {
                 </Select>
               </FormControl>
               <FormControl fullWidth margin="normal">
-                <InputLabel style={{ marginBottom: 8 }} >Photo</InputLabel>
-                <TextField
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setPhoto(e.target.files[0])}
-                  fullWidth
-                />
-              
+                <Box display="flex" alignItems="center">
+                  <InputLabel style={{ marginRight: 10 }}>Photo</InputLabel>
+                  <TextField
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setPhoto(e.target.files[0])}
+                    fullWidth
+                  />
+                </Box>
+                <div className='mt-3'>
+                  {photo && <img src={URL.createObjectURL(photo)} alt="product" style={{ width: 100, height: 100 }} />}
+                </div>
               </FormControl>
-              <div>
-                <img src={photo ? URL.createObjectURL(photo) : ''} alt="Product" style={{ width: 100, height: 100 }} />
-              </div>
               <FormControl fullWidth margin="normal">
                 <TextField
                   label="Name"
@@ -145,18 +169,8 @@ const CreateProduct = () => {
                   placeholder="Product Quantity"
                 />
               </FormControl>
-              {/* <FormControl fullWidth margin="normal">
-                <InputLabel>Shipping</InputLabel>
-                <Select
-                  value={shipping}
-                  onChange={(e) => setShipping(e.target.value)}
-                >
-                  <MenuItem value="Yes">Yes</MenuItem>
-                  <MenuItem value="No">No</MenuItem>
-                </Select>
-              </FormControl> */}
               <Button type="submit" variant="contained" color="primary" style={{ marginTop: 16 }}>
-                Create Product
+                Update Product
               </Button>
             </form>
           </div>
@@ -166,4 +180,4 @@ const CreateProduct = () => {
   );
 };
 
-export default CreateProduct;
+export default UpdateProduct;

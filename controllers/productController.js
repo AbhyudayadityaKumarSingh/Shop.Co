@@ -132,55 +132,64 @@ export const deleteProductController = async(req,res) => {
     }
 } ;
 
-export const updateProductController = async(req,res) => {
-    try{
-        const product = await productModel.findById(req.params.pid);
-        if(!product){
-            return res.status(404).send({
-                success: false,
-                message: "Product Not Found"
-            });
-        }
-        const {name,slug,price,category , quantity,description, shipping} = req.fields;
-        const {photo} = req.files;
-
-        //validation
-        if(!name || !price || !category || !quantity || !description ){
-            return res.status(500).send({
-                success: false,
-                message: "All fields are required"
-            });
-        }
-        if(photo.size > 1000000){
-            return res.status(500).send({
-                success: false,
-                message: "Image should be less than 1mb"
-            });
-        }
-        product.name = name;
-        product.slug = slugify(name);
-        product.price = price;
-        product.category = category;
-        product.quantity = quantity;
-        product.description = description;
-        product.shipping = shipping;
-        if(photo) {
-            product.photo.data = fs.readFileSync(photo.path) ;
-            product.photo.contentType = photo.type ;
-        }
-        await product.save();
-        res.status(200).send({
-            success: true,
-            message: "Product Updated Successfully",
-            product
+export const updateProductController = async (req, res) => {
+    try {
+      const product = await productModel.findById(req.params.pid);
+      if (!product) {
+        return res.status(404).send({
+          success: false,
+          message: "Product Not Found",
         });
-    }
-    catch(error){
-        console.log(error);
-        res.status(500).send({
-            success: false,
-            message: "Error in Updating Product" ,
-            error: error.message
+      }
+  
+      const { name, price, category, quantity, description, shipping } = req.fields;
+      const { photo } = req.files;
+  
+      // Validation
+      if (!name || !price || !category || !quantity || !description) {
+        return res.status(400).send({
+          success: false,
+          message: "All fields are required",
         });
+      }
+  
+      // Check photo size if photo is provided
+      if (photo && photo.size > 1000000) {
+        return res.status(400).send({
+          success: false,
+          message: "Image should be less than 1mb",
+        });
+      }
+  
+      // Update product fields
+      product.name = name;
+      product.slug = slugify(name);
+      product.price = price;
+      product.category = category;
+      product.quantity = quantity;
+      product.description = description;
+      product.shipping = shipping;
+  
+      // Update photo if provided
+      if (photo) {
+        product.photo.data = fs.readFileSync(photo.path);
+        product.photo.contentType = photo.type;
+      }
+  
+      await product.save();
+  
+      res.status(200).send({
+        success: true,
+        message: "Product Updated Successfully",
+        product,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        success: false,
+        message: "Error in Updating Product",
+        error: error.message,
+      });
     }
-} ;
+  };
+  
