@@ -338,3 +338,6 @@ export const productCategoryController = async(req,res) => {
         });
     }
 } ;  
+
+
+//payment gateway

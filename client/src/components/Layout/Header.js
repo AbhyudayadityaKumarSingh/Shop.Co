@@ -6,7 +6,8 @@ import toast from 'react-hot-toast';
 import SearchInput from '../Form/SearchInput';
 import useCategory from '../hooks/useCategory';
 import { useCart } from '../context/Cart';
-  
+import { HiOutlineShoppingCart } from "react-icons/hi";
+
 
 const Header = () => {
     const { auth, setAuth } = useAuth();
@@ -86,7 +87,7 @@ const Header = () => {
                                 </>
                             )}
                             <li className="nav-item">
-                                <Link className="nav-link" to="/cart">Cart ({cart?.length})</Link>
+                                <Link className="nav-link" to="/cart"> <HiOutlineShoppingCart/> ({cart?.length})</Link>
                             </li>
                         </ul>
                     </div>
