@@ -10,7 +10,7 @@ router.post('/create-category', requireSignin, isAdmin, createCategoryController
 //update category
 router.put('/update-category/:id', requireSignin, isAdmin, updateCategoryController); // Add leading slash to the route
 //get All categories
- router.get('/categories', getCategoriesController); 
+ router.get('/get-categories', getCategoriesController); 
  //get single category
 router.get('/single-category/:slug', getSingleCategoryController); 
 //delete category
