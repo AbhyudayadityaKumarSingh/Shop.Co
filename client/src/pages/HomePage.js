@@ -4,8 +4,6 @@ import axios from 'axios';
 import { FaShoppingBag } from "react-icons/fa";
 import { Prices } from '../components/Prices';
 import { useCart } from '../components/context/Cart';
-
-
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -20,29 +18,25 @@ const HomePage = () => {
     const [loading , setLoading] = useState(false);
     const navigate = useNavigate();
 
-    //get Total Count of Products
     const getTotal = async () => {
-      try{ 
+      try {
         setLoading(true);
         const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
         setLoading(false);
         setTotal(data.total);
-      }
-      catch(error){
+      } catch (error) {
         setLoading(false);
         console.log(error);
-    
       }
     };
-    //load more
+
     const loadMore = async () => {
-      try{
+      try {
         setLoading(true);
-        const {data} = await axios.get(`/api/v1/product/product-list/${page}`);
+        const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
         setLoading(false);
-        setProducts([...products,...data.products]);
-      }
-      catch(error){
+        setProducts([...products, ...data.products]);
+      } catch (error) {
         console.log(error);
         setLoading(false);
       }
@@ -50,16 +44,13 @@ const HomePage = () => {
 
     useEffect(() => {
       getTotal();
-    });
+    }, []);
 
     useEffect(() => {
-     if(page===1) return 
+      if (page === 1) return;
       loadMore();
-    },[page]);
+    }, [page]);
 
-    
-
-    // Fetch all products
     const getAllProducts = async () => {
         try {
             const { data } = await axios.get('/api/v1/product/get-products');
@@ -69,7 +60,6 @@ const HomePage = () => {
         }
     };
 
-    // Fetch all categories
     const getAllCategories = async () => {
         try {
             const { data } = await axios.get('/api/v1/category/get-categories');
@@ -80,11 +70,10 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-      if(!checked.length || !radio.length)  getAllProducts();
+      if (!checked.length || !radio.length) getAllProducts();
         getAllCategories();
     }, []);
 
-    // Handle category filter change
     const handleFilter = (value, id) => {
         let all = [...checked];
         if (value) {
@@ -95,7 +84,6 @@ const HomePage = () => {
         setChecked(all);
     };
 
-    // Get filtered products
     useEffect(() => {
         const getFilteredProducts = async () => {
             try {
@@ -106,7 +94,17 @@ const HomePage = () => {
             }
         };
         getFilteredProducts();
-    }, [checked, radio]); // Trigger this effect only when checked or radio changes
+    }, [checked, radio]);
+
+    const handleAddToCart = (product) => {
+        console.log('Adding to cart:', product);
+        setCart((prevCart) => {
+            const updatedCart = [...prevCart, product];
+            console.log('Updated cart:', updatedCart);
+            return updatedCart;
+        });
+        toast.success('Item added to cart');
+    };
 
     return (
         <Layout title={"SHOP.Co - Best Offers"}>
@@ -134,16 +132,14 @@ const HomePage = () => {
                                     value={JSON.stringify(p.array)}
                                     className='form-check-input'
                                     id={p._id}
-                                    name='price-options'  // Ensure all radios are in the same group
+                                    name='price-options'
                                     onChange={(e) => setRadio(e.target.value)}
                                 />
                                 <label htmlFor={p._id} className='form-check-label'>{p.name}</label>
                             </div>
                         ))}
                     </div>
-                    <button className='btn btn-danger mt-3 ms-3' onClick={(e) =>{
-                      window.location.reload();
-                    }}>Reset Filters</button>
+                    <button className='btn btn-danger mt-3 ms-3' onClick={() => window.location.reload()}>Reset Filters</button>
                 </div>
                 <div className='col-md-9'>
                     <h1 className='text-center'>All Products</h1>
@@ -156,22 +152,19 @@ const HomePage = () => {
                                     <p className="card-text">{p.description}</p>
                                     <p className="card-text"><strong>Price: ${p.price}</strong></p>
                                     <p className="card-text">{p.quantity > 0 ? "In Stock" : "Out of Stock"}</p>
-                                    <a  className="btn btn-primary" onClick={()=> {navigate(`product/${p.slug}`)}}>View Product</a>
-                                    <a  className="btn btn-secondary ms-2">Add to Cart <FaShoppingBag className='mb-1' 
-                                    onClick={(e) => 
-                                    {setCart([...cart , p])
-                                    toast.success('Item added to cart') }} /></a>
+                                    <button className="btn btn-primary" onClick={() => navigate(`product/${p.slug}`)}>View Product</button>
+                                    <button className="btn btn-secondary ms-2" onClick={() => handleAddToCart(p)}>
+                                        Add to Cart <FaShoppingBag className='mb-1' />
+                                    </button>
                                 </div>
                             </div>
                         ))}
                     </div>
                     <div className='m-2 p-3'>
                       {products && products.length < total && (
-                        <button className='btn btn-warning' onClick={(e) => {
-                          e.preventDefault();
-                         
-                          setPage(page + 1);
-                        }}>{loading ? "Loading ..." : "Load More"}</button>
+                        <button className='btn btn-warning' onClick={() => setPage(page + 1)}>
+                          {loading ? "Loading ..." : "Load More"}
+                        </button>
                       )}
                     </div>
                 </div>
