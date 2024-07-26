@@ -1,6 +1,6 @@
 import express from 'express';
 import { isAdmin, requireSignin } from '../middlewares/authMiddleware.js';
-import { createProductController, deleteProductController, getProductsController, getSingleProductsController, productCountController, productListController, productPhotoController, productsFilterController, updateProductController } from '../controllers/productController.js';
+import { createProductController, deleteProductController, getProductsController, getSingleProductsController, productCategoryController, productCountController, productListController, productPhotoController, productsFilterController, relatedProductController, searchProductController, updateProductController } from '../controllers/productController.js';
 import formidable from 'express-formidable';
 import { get } from 'mongoose';
 const router = express.Router();
@@ -25,6 +25,15 @@ router.get('/product-count', productCountController);
 
 //product per page
 router.get('/product-list/:page',  productListController);
+
+//search product
+router.post('/search/:keyword', searchProductController);
+
+//similar products
+router.get('/related-product/:pid/:cid', relatedProductController);
+
+//category wise product
+router.get('/product-category/:slug', productCategoryController);
 
 
 export default router;

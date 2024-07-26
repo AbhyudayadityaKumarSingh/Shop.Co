@@ -1,5 +1,6 @@
 
 import productModel from "../models/productModel.js";
+import categoryModel from "../models/categoryModel.js";
 import fs from 'fs';
 import slugify from 'slugify';
 export const createProductController =async(req,res) => {
@@ -269,3 +270,71 @@ export const productListController = async(req,res) => {
     }
 
  } ;  
+
+
+ // Search Product
+ export const searchProductController = async (req, res) => {
+    try{
+      const {keyword} = req.params;
+      const result = await productModel.find({
+        $or: [
+          {name: {$regex: keyword, $options: 'i'}},
+          {description: {$regex: keyword, $options: 'i'}}
+        ]
+      }).populate('category').select('-photo');
+      res.json(result)
+    }
+    catch(error){
+        console.log(error);
+        res.status(400).send({
+            success: false,
+            message: "Error in Searching Product",
+            error: error.message
+        });
+    }
+ };
+
+ export const relatedProductController = async(req,res) => {
+    try{
+        const {pid,cid} = req.params;
+        const products = await productModel.find({
+            category: cid,
+            _id: {$ne: pid}
+        }).limit(4).select('-photo').populate('category');
+
+        res.status(200).send({
+            success: true,
+            message: "Related Products Received Successfully",
+            products
+        });
+    }
+    catch(error){
+        console.log(error);
+        res.status(400).send({
+            success: false,
+            message: "Error in Getting Related Products",
+            error: error.message
+        });
+    }
+  } ;
+
+export const productCategoryController = async(req,res) => {
+    try{
+         const category = await categoryModel.findOne({slug : req.params.slug});
+         const products = await productModel.find({category: category._id}).populate('category').select('-photo');
+         res.status(200).send({
+             success: true,
+             message: "Product Category Received Successfully",
+             category,
+             products
+            });
+    }
+    catch(error) {
+        console.log(error);
+        res.status(400).send({
+            success: false,
+            message: "Error in Getting Product Category",
+            error: error.message
+        });
+    }
+} ;  

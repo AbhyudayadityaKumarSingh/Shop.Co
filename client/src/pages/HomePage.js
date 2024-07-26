@@ -3,16 +3,22 @@ import Layout from '../components/Layout/Layout';
 import axios from 'axios';
 import { FaShoppingBag } from "react-icons/fa";
 import { Prices } from '../components/Prices';
-import { set } from 'mongoose';
+import { useCart } from '../components/context/Cart';
+
+
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const HomePage = () => {
     const [products, setProducts] = useState([]);
+    const { cart, setCart } = useCart();
     const [categories, setCategories] = useState([]);
     const [checked, setChecked] = useState([]);
     const [radio, setRadio] = useState('');
     const [total , setTotal] = useState(0);
     const [page, setPage] = useState(1);
     const [loading , setLoading] = useState(false);
+    const navigate = useNavigate();
 
     //get Total Count of Products
     const getTotal = async () => {
@@ -150,8 +156,11 @@ const HomePage = () => {
                                     <p className="card-text">{p.description}</p>
                                     <p className="card-text"><strong>Price: ${p.price}</strong></p>
                                     <p className="card-text">{p.quantity > 0 ? "In Stock" : "Out of Stock"}</p>
-                                    <a href="#" className="btn btn-primary">View Product</a>
-                                    <a href="#" className="btn btn-secondary ms-2">Add to <FaShoppingBag className='mb-1' /></a>
+                                    <a  className="btn btn-primary" onClick={()=> {navigate(`product/${p.slug}`)}}>View Product</a>
+                                    <a  className="btn btn-secondary ms-2">Add to Cart <FaShoppingBag className='mb-1' 
+                                    onClick={(e) => 
+                                    {setCart([...cart , p])
+                                    toast.success('Item added to cart') }} /></a>
                                 </div>
                             </div>
                         ))}

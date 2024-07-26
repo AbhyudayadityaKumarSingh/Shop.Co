@@ -21,12 +21,28 @@ import Orders from './pages/user/Orders';
 import Profile from './pages/user/Profile';
 import Products from './pages/Admin/Products';
 import UpdateProduct from './pages/Admin/UpdateProduct';
+import Search from './pages/Search';
+import ProductDetails from './pages/ProductDetails';
+import Categories from './pages/Categories';
+import CategoryList from './pages/CategoryList';
+import CartPage from './pages/CartPage';
 
 function App() {
   return (
     <>
      <Routes>
         <Route path='/' element={<HomePage/>}/>
+        <Route path='/search' element={<Search/>}/>
+        <Route path='/product/:slug' element={<ProductDetails/>}/>
+        <Route path='/categories' element={<Categories/>}/>
+        
+        <Route path='/category/:slug' element={<CategoryList/>}/>
+       
+        <Route path='/cart' element={<CartPage/>}/>
+        
+
+
+
         <Route path='/register' element={<Register/>}/>
 
         <Route path='/dashboard' element={<PrivateRoute/>}>
