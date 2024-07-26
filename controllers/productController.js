@@ -192,4 +192,80 @@ export const updateProductController = async (req, res) => {
       });
     }
   };
+
+  export const productsFilterController = async(req,res) => {
+    try{
+       const {checked,radio} = req.body;
+       let args = {};
+       if(checked.length > 0){
+           args.category = checked;
+       }
+       if(radio.length) {
+        args.price = {
+            $gte: radio[0],
+            $lte: radio[1]
+        }
+       }
+       const products = await productModel.find(args).populate('category').select('-photo').limit(10).sort({createdAt :-1});
+         res.status(200).send({
+              success: true,
+              message: "Filtered Products",
+              products,
+              total: products.length
+         });
+    }
+    catch(error){
+        console.log(error);
+        res.status(400).send({
+            success: false,
+            message: "Error in Filtering Products",
+            error: error.message
+        });
+    }
+  } ;
   
+  export const productCountController = async(req,res) => { 
+    try{
+        const total = await productModel.find({}).estimatedDocumentCount();
+        res.status(200).send({
+            success: true,
+            message: "Product Count Received Successfully",
+            total
+        });
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error in Getting Product Count",
+            error: error.message
+        })
+    }
+  } ;
+//product list based on page
+export const productListController = async(req,res) => {   
+    try{
+        const perPage = 2;
+        const page = req.params.page || 1;
+        const products = await productModel.find({}).populate('category').select('-photo').
+        skip((perPage * (page-1 ))).
+        limit(perPage).
+        sort({createdAt :-1});
+
+        res.status(200).send({ 
+            success: true,
+            message: "Product List Received Successfully",
+            products,
+            total: products.length
+        });
+    }
+    catch(error){
+        console.log(error);
+        res.status(400).send({
+            success: false,
+            message: "Error in Getting Product List",
+            error: error.message
+        });
+    }
+
+ } ;  
