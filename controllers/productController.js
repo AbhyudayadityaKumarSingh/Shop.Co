@@ -5,9 +5,9 @@ import fs from 'fs';
 import slugify from 'slugify';
 import braintree from "braintree";
 import dotenv from 'dotenv';
-import { error } from "console";
+
 import orderModel from "../models/categoryModel.js";
-import e from "express";
+
 
 
 
@@ -353,92 +353,84 @@ export const productCategoryController = async(req,res) => {
 
 //payment gateway
 
+// Initialize Braintree Gateway
 var gateway = new braintree.BraintreeGateway({
     environment: braintree.Environment.Sandbox,
     merchantId: process.env.BRAINTREE_MERCHANT_ID,
-    publicKey:  process.env.BRAINTREE_PUBLIC_KEY,
+    publicKey: process.env.BRAINTREE_PUBLIC_KEY,
     privateKey: process.env.BRAINTREE_PRIVATE_KEY
-  });
+});
 
-  //payment gateway api
-  //token :
-  export const braintreeTokenController = async(req,res) => {
-    try{
-         gateway.clientToken.generate({} , function(err,response){
-            if(err) {
-                res.status(500).send({
+// Controller to generate Braintree token
+export const braintreeTokenController = async (req, res) => {
+    try {
+        gateway.clientToken.generate({}, (err, response) => {
+            if (err) {
+                return res.status(500).send({
                     success: false,
-                    message: "Error in Getting Token" ,
-                    error   : err.message
+                    message: "Error in Getting Token",
+                    error: err.message
                 });
             }
-            else {
-                res.send({
-                    success: true,
-                    token: response.clientToken
-                    
-                })
-
-
-
-            }
-         })
-        
-    }
-    catch(error){
+            res.send({
+                success: true,
+                token: response.clientToken
+            });
+        });
+    } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
-            message: "Error in Getting Token" ,
-            error   : error.message
+            message: "Error in Getting Token",
+            error: error.message
         });
     }
-  } ;
-  //payment :
-  export const  braintreePaymentsController = async(req,res) => {
-          try{
-            const {cart, nonce} = req.body;
-            let total = 0;
-            cart.map(p => {
-                total += p.price;
-            });
-            let newTransaction = gateway.transaction.sale({
-                amount : total ,
-                paymentMethodNonce : nonce,
-                options : {
-                    submitForSettlement : true
-                }
-            },
-            function(err,result){
-               if(result) {
-                const order = new orderModel({
-                    products: cart,
-                    payment : result ,
-                    buyer : req.user._id
-                }).save();
-                res.status(200).send({
-                    success: true,
-                    message: "Payment Successfull"
-                });
-               }
-               else{
-                res.status(500).send({
-                    success: false,
-                    message: "Error in Payment" ,
-                    error   : err.message
-                });
-               }
+};
+
+// Controller to handle Braintree payments
+export const braintreePaymentsController = async (req, res) => {
+    try {
+        const { cart, nonce } = req.body;
+        let total = 0;
+        cart.forEach(p => {
+            total += p.price;
+        });
+
+        gateway.transaction.sale({
+            amount: total.toFixed(2), // Ensure the amount is in a proper format
+            paymentMethodNonce: nonce,
+            options: {
+                submitForSettlement: true
             }
-        )
-          }
-          catch(error){
-                console.log(error);
-                res.status(500).send({
+        }, async (err, result) => {
+            if (err || !result.success) {
+                return res.status(500).send({
                     success: false,
-                    message: "Error in Payment" ,
-                    error   : error.message
-                }); 
-          }
-  } ;
+                    message: "Error in Payment",
+                    error: err ? err.message : result.message
+                });
+            }
 
+            const order = new orderModel({
+                products: cart,
+                payment: result,
+                buyer: req.user._id
+            });
 
+            await order.save();
+
+            res.status(200).send({
+                success: true,
+                message: "Payment Successful",
+                order
+            });
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Error in Payment",
+            error: error.message
+        });
+    }
+};

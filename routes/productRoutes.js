@@ -37,7 +37,7 @@ router.get('/product-category/:slug', productCategoryController);
 
 //payment ROUTES
 //token
-router.post('/braintree/token' , braintreeTokenController);
+router.get('/braintree/token' , braintreeTokenController);
 
 //payment
 router.post('/braintree/payment', requireSignin, braintreePaymentsController);

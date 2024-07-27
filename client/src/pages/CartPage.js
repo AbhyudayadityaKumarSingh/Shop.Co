@@ -30,8 +30,9 @@ const CartPage = () => {
 
     const getToken = async () => {
         try {
-            const { data } = await axios.post('/api/v1/product/braintree/token');
-            setClientToken(data.clientToken);
+            const { data } = await axios.get('/api/v1/product/braintree/token');  // Ensure the method matches your backend setup
+            console.log('Fetched clientToken:', data.token);
+            setClientToken(data.token);  // Ensure this matches your backend response
         } catch (error) {
             toast.error('Error fetching payment token');
             console.log(error);
@@ -65,7 +66,7 @@ const CartPage = () => {
         toast.success('Cart emptied');
     };
 
-    const calculateTotalAmount = () => cart.reduce((acc, item) => acc + item.price, 0);
+    const calculateTotalAmount = () => cart.reduce((acc, item) => acc + item.price, 0).toFixed(2);
 
     return (
         <Layout>
@@ -73,7 +74,7 @@ const CartPage = () => {
                 <div className='row'>
                     <div className='col-md-12'>
                         <h1 className='text-center bg-light p-2 mb-2'>
-                            {`Hello ${auth?.token && auth?.user.name}`}
+                            {`Hello ${auth?.token && auth?.user?.name}`}
                         </h1>
                         <h4 className='text-center'>
                             {`You have ${cart?.length} items in your cart`}
@@ -102,7 +103,6 @@ const CartPage = () => {
                         <h4>Order Summary</h4>
                         <p>{`Total Items: ${cart.length}`}</p>
                         <hr />
-                        <h5>{`Total Amount: $${calculateTotalAmount()}`}</h5>
                         {auth?.user?.address ? (
                             <div className='col-md-12'>
                                 <h6>Delivery Address:</h6>
@@ -114,26 +114,21 @@ const CartPage = () => {
                                 <button className='btn btn-warning' onClick={() => navigate('/login')}>Login to Checkout</button>
                             </div>
                         )}
-                        <hr />
+                        <hr/>
+                        <h5>{`Total Amount: $${calculateTotalAmount()}`}</h5>
                         <div className='mt-2'>
-                            {!clientToken || !cart?.length ? (
-                                ""
-                            ) : (
+                            {clientToken && (
                                 <>
-                                    <DropIn
-                                        options={{
-                                            authorization: clientToken,
-                                            paypal: {
-                                                flow: 'vault'
-                                            }
-                                        }}
-                                        onInstance={(instance) => setInstance(instance)}
-                                    />
-                                    <button className='btn btn-primary' onClick={handlePayment} disabled={loading}>
-                                        {loading ? 'Processing...' : 'Make Payment'}
+                                    <DropIn options={{ authorization: clientToken }} onInstance={(instance) => {
+                                        console.log('DropIn instance:', instance);
+                                        setInstance(instance);
+                                    }} />
+                                    <button className='btn btn-primary' onClick={handlePayment} disabled={loading || !instance}>
+                                        {loading ? 'Processing...' : 'Pay Now'}
                                     </button>
                                 </>
                             )}
+                            {!clientToken && <p>Loading payment options...</p>}
                         </div>
                     </div>
                 </div>
