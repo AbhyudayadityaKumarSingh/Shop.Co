@@ -31,6 +31,7 @@ const CartPage = () => {
     const getToken = async () => {
         try {
             const { data } = await axios.get('/api/v1/product/braintree/token');
+            console.log('Fetched clientToken:', data.token);
             setClientToken(data.token);
         } catch (error) {
             toast.error('Error fetching payment token');
@@ -39,26 +40,18 @@ const CartPage = () => {
     };
 
     useEffect(() => {
-        if (auth?.token) {
-            getToken();
-        }
+        getToken();
     }, [auth?.token]);
 
     const handlePayment = async () => {
-        if (!auth?.token) {
-            navigate('/login');
-            toast.error('You need to log in to make a payment');
-            return;
-        }
-
         try {
             setLoading(true);
             const { nonce } = await instance.requestPaymentMethod();
-            const { data } = await axios.post('/api/v1/product/braintree/payment', { nonce, amount: calculateTotalAmount() });
+            const { data } = await axios.post('/api/v1/product/braintree/payment', { nonce, amount: calculateTotalAmount(), cart });
             setLoading(false);
             localStorage.removeItem('cart');
             setCart([]);
-            navigate('/dashboard/user/order');
+            navigate('/dashboard/user/orders');
             toast.success('Payment Successful');
         } catch (error) {
             toast.error('Payment failed');
@@ -126,7 +119,10 @@ const CartPage = () => {
                         <div className='mt-2'>
                             {clientToken && (
                                 <>
-                                    <DropIn options={{ authorization: clientToken }} onInstance={(instance) => setInstance(instance)} />
+                                    <DropIn options={{ authorization: clientToken }} onInstance={(instance) => {
+                                        console.log('DropIn instance:', instance);
+                                        setInstance(instance);
+                                    }} />
                                     <button className='btn btn-primary' onClick={handlePayment} disabled={loading || !instance}>
                                         {loading ? 'Processing...' : 'Pay Now'}
                                     </button>

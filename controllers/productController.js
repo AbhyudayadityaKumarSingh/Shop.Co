@@ -430,6 +430,7 @@ export const braintreePaymentsController = async (req, res) => {
             }
         }, async (err, result) => {
             if (err || !result.success) {
+                console.error("Braintree transaction error:", err || result.message);
                 return res.status(500).send({
                     success: false,
                     message: "Error in Payment",
@@ -437,13 +438,17 @@ export const braintreePaymentsController = async (req, res) => {
                 });
             }
 
+            // Log Braintree result
+            console.log("Braintree result:", result);
+
             // Create new order
             const order = new orderModel({
                 products: cart,
-                payment: result,
+                payment: result.transaction,
                 buyer: req.user._id
             });
 
+            // Save order
             await order.save();
 
             res.status(200).send({
@@ -453,7 +458,7 @@ export const braintreePaymentsController = async (req, res) => {
             });
         });
     } catch (error) {
-        console.log(error);
+        console.error("Payment processing error:", error);
         res.status(500).send({
             success: false,
             message: "Error in Payment",

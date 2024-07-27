@@ -148,24 +148,34 @@ export const updateUserProfileController = async (req, res) => {
 };
 
 // Get Orders Controller
+// Get Orders Controller
 export const getOrdersController = async (req, res) => {
     try {
-        const orders = await Order.find({ buyer: req.user._id }).populate('products', '-photo').populate('buyer', 'name');
-         res.json({ orders });
+        const orders = await Order.find({ buyer: req.user._id })
+            .populate('products.product', 'title price images description category subs')
+            .populate('buyer', 'name');
+        res.json({ orders });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error fetching user orders:", error);
+        res.status(500).json({ message: "Error fetching user orders", error: error.message });
     }
 };
+
+
+// Get All Orders Controller
 export const getAllOrdersController = async (req, res) => {
     try {
-        const orders = await Order.find({}).populate('products', '-photo').populate('buyer', 'name')
-        .sort({ createdAt: -1 });
+        const orders = await Order.find({})
+            .populate('products.product', 'title price images description category subs')
+            .populate('buyer', 'name')
+            .sort({ createdAt: -1 });
         res.json({ orders });
-    }
-    catch (error) {
-        res.status(500).json({ message: error.message });
+    } catch (error) {
+        console.error("Error fetching all orders:", error);
+        res.status(500).json({ message: "Error fetching all orders", error: error.message });
     }
 };
+
 export const getAllUsersController = async (req, res) => {
     try{
         const users = await User.find({}).select('-password');
