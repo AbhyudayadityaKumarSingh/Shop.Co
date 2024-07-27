@@ -388,14 +388,40 @@ export const braintreeTokenController = async (req, res) => {
 };
 
 // Controller to handle Braintree payments
+// Controller to handle Braintree payments
 export const braintreePaymentsController = async (req, res) => {
     try {
         const { cart, nonce } = req.body;
+
+        // Validate cart
+        if (!Array.isArray(cart) || cart.length === 0) {
+            return res.status(400).send({
+                success: false,
+                message: "Cart is empty or invalid"
+            });
+        }
+
+        // Validate nonce
+        if (!nonce) {
+            return res.status(400).send({
+                success: false,
+                message: "Payment nonce is required"
+            });
+        }
+
+        // Calculate total amount
         let total = 0;
         cart.forEach(p => {
+            if (!p.price || typeof p.price !== 'number') {
+                return res.status(400).send({
+                    success: false,
+                    message: "Invalid product data in cart"
+                });
+            }
             total += p.price;
         });
 
+        // Create Braintree transaction
         gateway.transaction.sale({
             amount: total.toFixed(2), // Ensure the amount is in a proper format
             paymentMethodNonce: nonce,
@@ -411,6 +437,7 @@ export const braintreePaymentsController = async (req, res) => {
                 });
             }
 
+            // Create new order
             const order = new orderModel({
                 products: cart,
                 payment: result,

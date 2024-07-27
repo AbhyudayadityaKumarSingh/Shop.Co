@@ -30,9 +30,8 @@ const CartPage = () => {
 
     const getToken = async () => {
         try {
-            const { data } = await axios.get('/api/v1/product/braintree/token');  // Ensure the method matches your backend setup
-            console.log('Fetched clientToken:', data.token);
-            setClientToken(data.token);  // Ensure this matches your backend response
+            const { data } = await axios.get('/api/v1/product/braintree/token');
+            setClientToken(data.token);
         } catch (error) {
             toast.error('Error fetching payment token');
             console.log(error);
@@ -40,10 +39,18 @@ const CartPage = () => {
     };
 
     useEffect(() => {
-        getToken();
+        if (auth?.token) {
+            getToken();
+        }
     }, [auth?.token]);
 
     const handlePayment = async () => {
+        if (!auth?.token) {
+            navigate('/login');
+            toast.error('You need to log in to make a payment');
+            return;
+        }
+
         try {
             setLoading(true);
             const { nonce } = await instance.requestPaymentMethod();
@@ -119,10 +126,7 @@ const CartPage = () => {
                         <div className='mt-2'>
                             {clientToken && (
                                 <>
-                                    <DropIn options={{ authorization: clientToken }} onInstance={(instance) => {
-                                        console.log('DropIn instance:', instance);
-                                        setInstance(instance);
-                                    }} />
+                                    <DropIn options={{ authorization: clientToken }} onInstance={(instance) => setInstance(instance)} />
                                     <button className='btn btn-primary' onClick={handlePayment} disabled={loading || !instance}>
                                         {loading ? 'Processing...' : 'Pay Now'}
                                     </button>
