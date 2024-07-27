@@ -169,10 +169,21 @@ export const getAllOrdersController = async (req, res) => {
 export const getAllUsersController = async (req, res) => {
     try{
         const users = await User.find({}).select('-password');
-        res.json({ users });
-        
+        res.json({ users , count: users.length });
+
     }
     catch(error){
         res.status(500).json({ message: error.message });
     }
 };
+
+//delete user
+export const deleteUserController = async (req, res) => {
+    try{
+         const deletedUser = await User.findByIdAndDelete(req.params.id);
+         res.status(200).json({ message: "User deleted successfully" });
+    }
+        catch(error){   
+            res.status(500).json({ message: error.message });
+        }
+    }

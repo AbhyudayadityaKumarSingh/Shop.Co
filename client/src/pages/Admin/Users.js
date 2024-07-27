@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout/Layout';
 import AdminMenu from '../../components/Layout/AdminMenu';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -19,11 +20,25 @@ const Users = () => {
     getUsers();
   }, []);
 
-  //edit role
-  const handleEditRole = () => {
-    console.log('edit role');
-    users.role = 1 ?  0 : 1;
-    
+  // Edit user
+  const handleEditUser = (id) => {
+    console.log('Edit user', id);
+  };
+  
+
+  // Delete user
+  const handleDeleteUser = async (id) => {
+    try {
+      const { data } = await axios.delete(`/api/v1/auth/delete-user/${id}`);
+      if (data.success) {
+        // Remove the user from the state
+        toast.success('User deleted successfully');
+        setUsers(prevUsers => prevUsers.filter(u => u._id !== id));
+        console.log('User deleted successfully');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -48,20 +63,18 @@ const Users = () => {
               </thead>
               <tbody>
                 {users.map((u, i) => (
-                  <tr key={i}>
+                  <tr key={u._id}>
                     <th scope='row'>{i + 1}</th>
                     <td>{u?.name}</td>
                     <td>{u?.email}</td>
                     <td>{u?.address}</td>
-                    <td>{u?.role} </td>
+                    <td>{u?.role === 1 ? <strong> Admin </strong> : "User"}</td>
                     <td>
-                      <button className='btn btn-warning' onClick={handleEditRole}>
+                      <button className='btn btn-warning'>
                         Edit
                       </button>
-
-                      <button className='btn btn-danger ms-2'>Delete</button>
-                      </td>
-
+                      <button className='btn btn-danger ms-2' onClick={() => handleDeleteUser(u._id)}>Delete</button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

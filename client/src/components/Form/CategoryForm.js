@@ -4,7 +4,7 @@ export const CategoryForm = ({ name, setName, handleSubmit }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
-        <label htmlFor="categoryName">Add Category </label>
+        <label htmlFor="categoryName" className='mb-1'> <strong>Add Category  </strong></label>
         <input
           type="text"
           className="form-control"
