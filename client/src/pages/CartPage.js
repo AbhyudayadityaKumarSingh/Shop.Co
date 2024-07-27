@@ -60,6 +60,12 @@ const handlePayment = async () => {
     }
 
 };
+
+//empty cart
+const emptyCart = () => {
+    localStorage.removeItem('cart');
+    setCart([]);
+};
     return (
         <Layout>
             <div className='container'>
@@ -75,7 +81,8 @@ const handlePayment = async () => {
                 </div>
                 <div className='row'>
                     <div className='col-md-9'>
-                        Cart Items
+                       <button className='btn btn-outline-warning mb-2' onClick={emptyCart} >Empty Cart </button>
+                       
                         <div className='row'>
                             {cart.map((c) => (
                                 <div className='col-md-4' key={c._id}>
