@@ -27,11 +27,18 @@ const Register = () => {
             address,
             answer
         })
-        if(res.data.success){
-            toast.success(res.data.message) 
+        console.log("Response : " , res)
+        if(res.status === 201){
+          
+         
+
+            toast.success("User Registered Successfully") 
+         
             navigate('/login')
         }
         else{
+          console.log("Error : " ,res.data.message)
+
             toast.error(res.data.message)
         
         }

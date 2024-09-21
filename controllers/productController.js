@@ -7,6 +7,7 @@ import braintree from "braintree";
 import dotenv from 'dotenv';
 
 import orderModel from "../models/categoryModel.js";
+import { token } from "morgan";
 
 
 
@@ -374,7 +375,8 @@ export const braintreeTokenController = async (req, res) => {
             }
             res.send({
                 success: true,
-                token: response.clientToken
+                token: response.clientToken , 
+                
             });
         });
     } catch (error) {

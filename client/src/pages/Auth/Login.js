@@ -20,8 +20,8 @@ const Login = () => {
         email,
         password,
       });
-      if (res.data.success) {
-        toast.success(res.data.message);
+      if (res.status === 200) {
+        toast.success('User Logged in Successfully');
         setAuth({
           ...auth,
           user: res.data.user,

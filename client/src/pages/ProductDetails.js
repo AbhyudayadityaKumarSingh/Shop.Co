@@ -55,7 +55,7 @@ const ProductDetails = () => {
             <p>Category: {product.category && product.category.name}</p>
             <p>Quantity: {product.quantity}</p>
 
-            <button className='btn btn-primary'>Add to Cart</button>
+            <button className='btn btn-primary' >Add to Cart</button>
             
           </div>
 
